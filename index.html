@@ -1,0 +1,55 @@
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@0,14..32,300..500;1,14..32,300..500&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --kvlm-ui-color-cyan: #69c6e2;
+      --kvlm-ui-color-cyan-light: #8acdca;
+      --kvlm-ui-color-cyan-dark: #71bad9;
+
+      --kvlm-ui-color-metal: #1d1d1b;
+      --kvlm-ui-color-metal-light: #525252;
+      --kvlm-ui-color-metal-dark: #101010;
+
+      --kvlm-ui-color-ivory: #faf6e9;
+
+      --kvlm-ui-gradient-angle: 135deg;
+      --kvlm-ui-gradient-cyan: linear-gradient(
+        var(--kvlm-ui-gradient-angle),
+        var(--kvlm-ui-color-cyan-light) 0%,
+        var(--kvlm-ui-color-cyan) 50%,
+        var(--kvlm-ui-color-cyan-dark) 100%
+      );
+      --kvlm-ui-gradient-metal: linear-gradient(
+        var(--kvlm-ui-gradient-angle),
+        var(--kvlm-ui-color-metal-light) 0%,
+        var(--kvlm-ui-color-metal) 50%,
+        var(--kvlm-ui-color-metal-dark) 100%
+      );
+    }
+
+    body {
+      margin: 0;
+      height: 100%;
+
+      font-family: 'Inter', sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    @media print {
+      @page {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <kvlm-atmospheric-posting></kvlm-atmospheric-posting>
+  <script type="module" src="/src/index.ts"></script>
+</body>

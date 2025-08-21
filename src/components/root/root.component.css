@@ -1,0 +1,64 @@
+:host {
+  ---kvlm-atmospheric-posting-aspect-ratio: 1 / 1;
+
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  background: var(--kvlm-ui-gradient-metal);
+}
+
+main {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+  flex: 1 0 auto;
+
+  /* Spacing around the content */
+  padding: 10vmin;
+
+  /* Enable container query units (cqw/cqh) */
+  container-type: size;
+
+  transition: opacity 0.2s ease-in-out;
+
+  &.dragging {
+    opacity: 0.5;
+  }
+}
+
+section {
+  position: relative;
+
+  /* Keep the element's shape */
+  aspect-ratio: var(---kvlm-atmospheric-posting-aspect-ratio);
+
+  /* Fallback sizing (before container units support) */
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+
+  background: var(--kvlm-ui-gradient-cyan);
+
+  /* With container query units, contain-scale to the main container */
+  inline-size: min(
+    100cqw,
+    calc(100cqh * (var(---kvlm-atmospheric-posting-aspect-ratio)))
+  );
+  block-size: auto;
+}
+
+canvas,
+input[type='file'] {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+
+input[type='file'] {
+  cursor: pointer;
+  opacity: 0;
+}

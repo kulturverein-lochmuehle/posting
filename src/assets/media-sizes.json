@@ -1,0 +1,22 @@
+{
+  "Instagram Feed": {
+    "width": 1080,
+    "height": 1080
+  },
+  "Instagram Reel": {
+    "width": 1080,
+    "height": 1920
+  },
+  "TikTok Reel": {
+    "width": 1080,
+    "height": 1920
+  },
+  "Facebook Feed": {
+    "width": 1080,
+    "height": 1350
+  },
+  "Facebook Story": {
+    "width": 1080,
+    "height": 1920
+  }
+}
