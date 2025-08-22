@@ -10,6 +10,7 @@ import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
 import { readFilesFromEvent } from '../../utils/file.utils.js';
 import type { FilterName } from '../../utils/filter.utils.js';
 import { previewFile } from '../../utils/preview.utils.js';
+import type { MediaSize } from '../options/options.component.js';
 
 import styles from './root.component.css?inline';
 
@@ -29,7 +30,10 @@ export class Root extends LitElement {
   private file?: File;
 
   @state()
-  private selectedSize: keyof typeof MEDIA_SIZES = 'Instagram Feed';
+  private selectedSize: MediaSize = [
+    MEDIA_SIZES['Instagram Feed'].height,
+    MEDIA_SIZES['Instagram Feed'].width,
+  ];
 
   @state()
   private selectedFilters: readonly FilterName[] = [];
@@ -94,12 +98,12 @@ export class Root extends LitElement {
       <main class="${classMap({ dragging: this.dragging })}">
         <section
           style="${styleMap({
-            '---kvlm-atmospheric-posting-aspect-ratio': `${MEDIA_SIZES[this.selectedSize]?.width || 1} / ${MEDIA_SIZES[this.selectedSize]?.height || 1}`,
+            '---kvlm-atmospheric-posting-aspect-ratio': `${this.selectedSize[1]} / ${this.selectedSize[0]}`,
           })}"
         >
           <canvas
-            height="${MEDIA_SIZES[this.selectedSize]?.height || 0}"
-            width="${MEDIA_SIZES[this.selectedSize]?.width || 0}"
+            height="${this.selectedSize[0]}"
+            width="${this.selectedSize[1]}"
           ></canvas>
           <input
             type="file"
