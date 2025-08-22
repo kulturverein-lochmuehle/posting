@@ -2,10 +2,15 @@
   ---kvlm-atmospheric-posting-aspect-ratio: 1 / 1;
 
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   height: 100%;
 
   background: var(--kvlm-ui-gradient-metal);
+}
+
+header {
+  flex: 0 0 auto;
+  min-width: 20vw;
 }
 
 main {

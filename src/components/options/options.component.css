@@ -5,7 +5,7 @@
 
 nav {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   gap: 1em;
   padding: 1em;
 }
@@ -14,9 +14,9 @@ fieldset {
   all: unset;
 
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
   gap: 0.5em 1em;
-  place-content: start;
+  align-items: start;
 }
 
 fieldset legend,
@@ -74,7 +74,7 @@ label.options {
   position: relative;
 
   display: flex;
-  flex-flow: row-reverse nowrap;
+  flex-flow: row nowrap;
   gap: 0.5em;
   align-items: center;
   height: fit-content;
@@ -90,7 +90,7 @@ label.options {
     opacity: 0;
   }
 
-  &::after {
+  &::before {
     display: block;
     box-sizing: border-box;
     height: 1.5em;
@@ -104,7 +104,7 @@ label.options {
     aspect-ratio: 1;
   }
 
-  &:has(input:checked)::after {
+  &:has(input:checked)::before {
     content: '╳';
   }
 }
