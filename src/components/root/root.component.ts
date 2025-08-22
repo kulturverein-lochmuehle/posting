@@ -48,6 +48,7 @@ export class Root extends LitElement {
     event.preventDefault();
 
     this.file = readFilesFromEvent(event)[0];
+    this.toggleAttribute('data-has-file', this.file !== undefined);
     this.#updateCanvas();
   }
 
@@ -57,6 +58,7 @@ export class Root extends LitElement {
 
     const input = event.target as HTMLInputElement;
     this.file = input.files?.[0];
+    this.toggleAttribute('data-has-file', this.file !== undefined);
     this.#updateCanvas();
   }
 

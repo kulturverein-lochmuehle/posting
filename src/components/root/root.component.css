@@ -41,6 +41,11 @@ section {
 
   background: var(--kvlm-ui-gradient-cyan);
 
+  :host([data-has-file]) & {
+    /* Previews with opacity connote faulty color mix results if not white */
+    background: #fff;
+  }
+
   /* With container query units, contain-scale to the main container */
   inline-size: min(
     100cqw,
