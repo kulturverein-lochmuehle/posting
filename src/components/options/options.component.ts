@@ -1,4 +1,3 @@
-import { ListConverter } from '@enke.dev/lit-utils/lib/converters/list.converter.js';
 import type { EventWithTarget } from '@enke.dev/lit-utils/lib/types/event.types.js';
 import { html, LitElement, unsafeCSS } from 'lit';
 import {
@@ -8,12 +7,16 @@ import {
   query,
   state,
 } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { live } from 'lit/directives/live.js';
 import { map } from 'lit/directives/map.js';
 
 import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
-import type { FilterName } from '../../utils/filter.utils.js';
-import { NATIVE_FILTERS } from '../../utils/filter.utils.js';
+import type {
+  ApplicableFilters,
+  FilterName,
+} from '../../utils/filter.utils.js';
+import { FILTERS } from '../../utils/filter.utils.js';
 
 import styles from './options.component.css?inline';
 
@@ -38,11 +41,11 @@ export class Options extends LitElement {
   @state()
   private isCustomSize = false;
 
-  @property({ type: Object, reflect: false })
+  @property({ type: Object })
   readonly selectedSize!: MediaSize;
 
-  @property({ type: Array, reflect: true, converter: ListConverter(' ') })
-  readonly selectedFilters!: FilterName[];
+  @property({ type: Object })
+  readonly selectedFilters!: ApplicableFilters;
 
   @eventOptions({ passive: true })
   private handleSizeChange({
@@ -70,18 +73,64 @@ export class Options extends LitElement {
 
   @eventOptions({ passive: true })
   private handleFilterChange({ target }: EventWithTarget<HTMLInputElement>) {
-    // determine the selected filters
-    const selectedFilters = new Set(this.selectedFilters);
-    if (target.checked) {
-      selectedFilters.add(target.value as FilterName);
+    const name = target.dataset.name as FilterName;
+    let isEnabled: boolean;
+    let currentValue: number;
+
+    if (target.name.endsWith('-value')) {
+      isEnabled =
+        target.parentElement?.querySelector<HTMLInputElement>(
+          `input[name="${name}-toggle"]`,
+        )?.checked ?? false;
+      currentValue = target.valueAsNumber;
     } else {
-      selectedFilters.delete(target.value as FilterName);
+      isEnabled = target.checked;
+      currentValue =
+        target.parentElement?.querySelector<HTMLInputElement>(
+          `input[name="${name}-value"]`,
+        )?.valueAsNumber ?? 0;
+    }
+
+    // determine the selected filters
+    const selectedFilters = new Map(Object.entries(this.selectedFilters));
+    if (isEnabled) {
+      selectedFilters.set(name, currentValue);
+    } else {
+      selectedFilters.delete(name);
     }
 
     // notify about filter change
-    const detail = [...selectedFilters];
+    const detail = Object.fromEntries(selectedFilters);
     const event = new CustomEvent('filters-change', { detail });
     this.dispatchEvent(event);
+  }
+
+  renderFilter(name: FilterName) {
+    const isEnabled = name in this.selectedFilters;
+    const schema = FILTERS[name];
+
+    return html`
+      <label class="options">
+        <input
+          type="checkbox"
+          data-name="${name}"
+          name="${name}-toggle"
+          value="${name}"
+          ?checked="${isEnabled}"
+        />
+        <input
+          ?hidden="${!isEnabled}"
+          data-name="${name}"
+          name="${name}-value"
+          type="${schema.step !== undefined ? 'range' : 'number'}"
+          min="${ifDefined(schema.min)}"
+          max="${ifDefined(schema.max)}"
+          step="${ifDefined(schema.step)}"
+          value="${ifDefined(schema.value)}"
+        />
+        <span>${name}</span>
+      </label>
+    `;
   }
 
   override render() {
@@ -117,22 +166,7 @@ export class Options extends LitElement {
 
         <fieldset @change=${this.handleFilterChange}>
           <legend>Filters</legend>
-          ${map(
-            Object.keys(NATIVE_FILTERS),
-            name => html`
-              <label class="options">
-                <input
-                  type="checkbox"
-                  name="native-filters"
-                  value="${name}"
-                  ?checked="${this.selectedFilters.includes(
-                    name as FilterName,
-                  )}"
-                />
-                <span>${name}</span>
-              </label>
-            `,
-          )}
+          ${map(Object.keys(FILTERS), name => this.renderFilter(name as FilterName))}
         </fieldset>
 
       </nav>
@@ -144,7 +178,7 @@ export class Options extends LitElement {
 declare global {
   interface HTMLElementEventMap {
     'size-change': CustomEvent<MediaSize>;
-    'filters-change': CustomEvent<FilterName[]>;
+    'filters-change': CustomEvent<ApplicableFilters>;
   }
 
   interface HTMLElementTagNameMap {

@@ -1,20 +1,32 @@
 /**
- * CSS filters are simply declared as strings.
+ * CSS filters are declared by its name and individual options.
  */
-export type Filter = string;
+export type Filter = {
+  value?: number; // allows setting a initial value
+  unit?: string; // adds a unit, e.g. "deg", "%"
+} &
+  // usage as slider
+  (| {
+        step: number; // when given, a slider is used
+        max: number; // required for sliders
+        min: number; // required for sliders
+      }
+    // usage as input with optional min and max constraints
+    | {
+        step?: undefined; // explicitly undefined to differentiate from the slider case (discriminator)
+        max?: number;
+        min?: number;
+      }
+  );
 
 /**
- * Picks a set of filters by their names from a collection.
- * @param filters The collection of filters to pick from.
- * @param names The names of the filters to pick.
- * @returns The picked filters.
+ * Parses a filter value into a CSS filter string.
+ * @param name The name of the filter.
+ * @param value The value of the filter.
+ * @returns The CSS filter string.
  */
-export function pickFiltersByName<
-  F extends Record<FilterName, Filter>,
-  K extends keyof F,
-  R extends (K extends keyof F ? F[K] : never)[],
->(filters: F, names: K[]): R {
-  return names.map(name => filters[name]).filter(Boolean) as R;
+export function parseFilter(name: FilterName, value: number): string {
+  return `${name}(${value}${FILTERS[name].unit})`;
 }
 
 /**
@@ -25,45 +37,41 @@ export function pickFiltersByName<
  */
 export function applyFilters(
   canvas: HTMLCanvasElement,
-  ...filters: FilterName[]
+  filters: ApplicableFilters,
 ): void {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
   // set native filters on the canvas element
-  const nativeFilters = pickFiltersByName(
-    NATIVE_FILTERS,
-    filters as FilterName[],
+  const parsed = Object.entries(filters).map(([name, value]) =>
+    parseFilter(name as FilterName, value),
   );
-  ctx.filter = nativeFilters.length > 0 ? nativeFilters.join(' ') : 'none';
+  ctx.filter = parsed.length > 0 ? parsed.join(' ') : 'none';
 }
 
-/**
- * A collection of custom image filters. As they're
- * applied frame by frame on videos, they tend to be
- * less performant than native CSS filters. So these
- * filters should be used sparingly and only when
- * necessary and primarily for images.
- */
 /**
  * Using native CSS filters in supporting browsers is
  * much simpler and more efficient than implementing
  * custom filters in JavaScript.
  */
-export const NATIVE_FILTERS = {
-  blur: 'blur(20px)',
-  brightness: 'brightness(0.4)',
-  contrast: 'contrast(200%)',
-  // shadow: 'drop-shadow(16px 16px 20px blue)',
-  grayscale: 'grayscale(50%)',
-  'hue rotate': 'hue-rotate(90deg)',
-  invert: 'invert(75%)',
-  opacity: 'opacity(25%)',
-  saturate: 'saturate(30%)',
-  sepia: 'sepia(60%)',
-} satisfies Record<Filter, Filter>;
+export const FILTERS = {
+  blur: { value: 20, min: 0, max: 200, step: 1, unit: 'px' },
+  brightness: { value: 40, min: 0, max: 300, step: 1, unit: '%' },
+  contrast: { value: 200, min: 0, max: 600, step: 1, unit: '%' },
+  grayscale: { value: 50, min: 0, max: 100, step: 1, unit: '%' },
+  'hue-rotate': { value: 90, min: 0, max: 360, step: 1, unit: 'deg' },
+  invert: { value: 75, min: 0, max: 100, step: 1, unit: '%' },
+  opacity: { value: 25, min: 0, max: 100, step: 1, unit: '%' },
+  saturate: { value: 30, min: 0, max: 100, step: 1, unit: '%' },
+  sepia: { value: 60, min: 0, max: 100, step: 1, unit: '%' },
+} satisfies Record<string, Filter>;
 
 /**
  * Aggregates all filter names into a union type.
  */
-export type FilterName = keyof typeof NATIVE_FILTERS;
+export type FilterName = keyof typeof FILTERS;
+
+/**
+ * When passing filters with values around, this type comes in handy
+ */
+export type ApplicableFilters = Partial<Record<FilterName, number>>;

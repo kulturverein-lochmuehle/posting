@@ -8,7 +8,7 @@ import { styleMap } from 'lit/directives/style-map.js';
 
 import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
 import { readFilesFromEvent } from '../../utils/file.utils.js';
-import type { FilterName } from '../../utils/filter.utils.js';
+import type { ApplicableFilters } from '../../utils/filter.utils.js';
 import { previewFile } from '../../utils/preview.utils.js';
 import type { MediaSize } from '../options/options.component.js';
 
@@ -36,7 +36,7 @@ export class Root extends LitElement {
   ];
 
   @state()
-  private selectedFilters: readonly FilterName[] = [];
+  private selectedFilters: ApplicableFilters = {};
 
   @eventOptions({ capture: true })
   private handleDragOver(event: DragEvent) {
@@ -79,11 +79,7 @@ export class Root extends LitElement {
   #updateCanvas() {
     if (this.file === undefined) return;
     this.#abortCtrl?.abort();
-    this.#abortCtrl = previewFile(
-      this.file,
-      this.canvas,
-      ...this.selectedFilters,
-    );
+    this.#abortCtrl = previewFile(this.file, this.canvas, this.selectedFilters);
   }
 
   override render() {
@@ -91,7 +87,7 @@ export class Root extends LitElement {
       <header>
         <kvlm-atmospheric-posting-options
           .selectedSize=${this.selectedSize}
-          .selectedFilters=${Array.from(this.selectedFilters)}
+          .selectedFilters=${this.selectedFilters}
           @size-change=${this.handleSizeChange}
           @filters-change=${this.handleFilterChange}
         ></kvlm-atmospheric-posting-options>

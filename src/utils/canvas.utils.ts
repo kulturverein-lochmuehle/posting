@@ -1,4 +1,4 @@
-import type { FilterName } from './filter.utils.js';
+import type { ApplicableFilters } from './filter.utils.js';
 import { applyFilters } from './filter.utils.js';
 
 /**
@@ -9,11 +9,11 @@ import { applyFilters } from './filter.utils.js';
 export function drawScaledImage(
   image: ImageBitmap | HTMLImageElement,
   canvas: HTMLCanvasElement,
-  filters: FilterName[],
+  filters: ApplicableFilters,
 ): void {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  applyFilters(canvas, ...filters);
+  applyFilters(canvas, filters);
 
   const hRatio = canvas.width / image.width;
   const vRatio = canvas.height / image.height;

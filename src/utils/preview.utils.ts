@@ -1,5 +1,5 @@
 import { drawScaledImage } from './canvas.utils.js';
-import type { FilterName } from './filter.utils.js';
+import type { ApplicableFilters } from './filter.utils.js';
 
 /**
  * Previews an image file on a canvas.
@@ -10,7 +10,7 @@ export function previewImage(
   file: File,
   canvas: HTMLCanvasElement,
   abortCtrl: AbortController,
-  filters: FilterName[],
+  filters: ApplicableFilters,
 ): void {
   // get the canvas context
   const ctx = canvas.getContext('2d');
@@ -43,7 +43,7 @@ export function previewVideo(
   file: File,
   canvas: HTMLCanvasElement,
   abortCtrl: AbortController,
-  filters: FilterName[],
+  filters: ApplicableFilters,
 ): void {
   // get the canvas context
   const ctx = canvas.getContext('2d');
@@ -93,7 +93,7 @@ export function previewVideo(
 export function previewFile(
   file: File,
   canvas: HTMLCanvasElement,
-  ...filters: FilterName[]
+  filters: ApplicableFilters,
 ): AbortController {
   const abortCtrl = new AbortController();
 
