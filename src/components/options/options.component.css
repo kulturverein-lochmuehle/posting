@@ -5,7 +5,6 @@
 
 nav {
   display: flex;
-  flex-flow: column nowrap;
   gap: 1em;
   padding: 1em;
 }
@@ -14,9 +13,7 @@ fieldset {
   all: unset;
 
   display: flex;
-  flex-flow: column nowrap;
   gap: 0.5em 1em;
-  align-items: start;
 }
 
 fieldset legend,
@@ -106,5 +103,29 @@ label.options {
 
   &:has(input:checked)::before {
     content: '╳';
+  }
+}
+
+@media (orientation: portrait) {
+
+  nav {
+    flex-flow: row nowrap;
+  }
+
+  fieldset {
+    flex-flow: row wrap;
+    place-content: start;
+  }
+}
+
+@media (orientation: landscape) {
+
+  nav {
+    flex-flow: column nowrap;
+  }
+
+  fieldset {
+    flex-flow: column nowrap;
+    align-items: start;
   }
 }

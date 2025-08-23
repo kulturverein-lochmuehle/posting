@@ -2,15 +2,9 @@
   ---kvlm-atmospheric-posting-aspect-ratio: 1 / 1;
 
   display: flex;
-  flex-flow: row nowrap;
   height: 100%;
 
   background: var(--kvlm-ui-gradient-metal);
-}
-
-header {
-  flex: 0 0 auto;
-  min-width: 20vw;
 }
 
 main {
@@ -71,4 +65,23 @@ input[type='file'] {
 input[type='file'] {
   cursor: pointer;
   opacity: 0;
+}
+
+@media (orientation: portrait) {
+
+  :host {
+    flex-flow: column nowrap;
+  }
+}
+
+@media (orientation: landscape) {
+
+  :host {
+    flex-flow: row nowrap;
+  }
+
+  header {
+    flex: 0 0 auto;
+    min-width: 20vw;
+  }
 }
