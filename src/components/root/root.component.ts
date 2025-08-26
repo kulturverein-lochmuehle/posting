@@ -41,6 +41,7 @@ export class Root extends LitElement {
   @eventOptions({ capture: true })
   private handleDragOver(event: DragEvent) {
     event.preventDefault();
+    this.setAttribute('data-dragging', '');
   }
 
   @eventOptions({ capture: true })
@@ -48,6 +49,7 @@ export class Root extends LitElement {
     event.preventDefault();
 
     this.file = readFilesFromEvent(event)[0];
+    this.removeAttribute('data-dragging');
     this.toggleAttribute('data-has-file', this.file !== undefined);
     this.#updateCanvas();
   }
@@ -58,6 +60,7 @@ export class Root extends LitElement {
 
     const input = event.target as HTMLInputElement;
     this.file = input.files?.[0];
+    this.removeAttribute('data-dragging');
     this.toggleAttribute('data-has-file', this.file !== undefined);
     this.#updateCanvas();
   }
