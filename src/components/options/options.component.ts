@@ -28,7 +28,7 @@ export type MediaSize = [height: number, width: number];
  * @emits {CustomEvent} size-change - Fired when the size is changed.
  * @emits {CustomEvent} filters-change - Fired when the filter is changed.
  */
-@customElement('kvlm-atmospheric-posting-options')
+@customElement('kvlm-posting-options')
 export class Options extends LitElement {
   static override readonly styles = unsafeCSS(styles);
 
@@ -182,6 +182,6 @@ declare global {
   }
 
   interface HTMLElementTagNameMap {
-    'kvlm-atmospheric-posting-options': Options;
+    'kvlm-posting-options': Options;
   }
 }

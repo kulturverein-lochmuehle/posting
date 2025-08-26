@@ -88,18 +88,18 @@ export class Root extends LitElement {
   override render() {
     return html`
       <header>
-        <kvlm-atmospheric-posting-options
+        <kvlm-posting-options
           .selectedSize=${this.selectedSize}
           .selectedFilters=${this.selectedFilters}
           @size-change=${this.handleSizeChange}
           @filters-change=${this.handleFilterChange}
-        ></kvlm-atmospheric-posting-options>
+        ></kvlm-posting-options>
       </header>
 
       <main class="${classMap({ dragging: this.dragging })}">
         <section
           style="${styleMap({
-            '---kvlm-atmospheric-posting-aspect-ratio': `${this.selectedSize[1]} / ${this.selectedSize[0]}`,
+            '---kvlm-posting-aspect-ratio': `${this.selectedSize[1]} / ${this.selectedSize[0]}`,
           })}"
         >
           <canvas
@@ -121,6 +121,6 @@ export class Root extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'kvlm-atmospheric-posting': Root;
+    'kvlm-posting': Root;
   }
 }

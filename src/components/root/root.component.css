@@ -1,5 +1,5 @@
 :host {
-  ---kvlm-atmospheric-posting-aspect-ratio: 1 / 1;
+  ---kvlm-posting-aspect-ratio: 1 / 1;
 
   display: flex;
   height: 100%;
@@ -31,7 +31,7 @@ section {
   position: relative;
 
   /* Keep the element's shape */
-  aspect-ratio: var(---kvlm-atmospheric-posting-aspect-ratio);
+  aspect-ratio: var(---kvlm-posting-aspect-ratio);
 
   /* Fallback sizing (before container units support) */
   width: 100%;
@@ -48,7 +48,7 @@ section {
   /* With container query units, contain-scale to the main container */
   inline-size: min(
     100cqw,
-    calc(100cqh * (var(---kvlm-atmospheric-posting-aspect-ratio)))
+    calc(100cqh * (var(---kvlm-posting-aspect-ratio)))
   );
   block-size: auto;
 
