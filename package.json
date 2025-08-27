@@ -14,20 +14,21 @@
   "scripts": {
     "lint": "run-s -ln lint:*",
     "lint:eslint": "eslint -c eslint.config.ts",
+    "lint:prettier": "prettier --check .",
     "lint:stylelint": "stylelint 'src/**/*.{css,scss}'",
     "dev": "vite dev",
     "build": "vite build"
   },
   "dependencies": {
-    "@enke.dev/lit-utils": "0.2.1",
+    "@enke.dev/lit-utils": "0.2.2",
     "lit": "3.3.1",
-    "mediabunny": "1.11.1"
+    "mediabunny": "1.11.2"
   },
   "devDependencies": {
-    "@enke.dev/lint": "0.6.4",
+    "@enke.dev/lint": "0.7.2",
     "eslint": "9.34.0",
     "jiti": "2.5.1",
-    "npm-run-all2": "5.0.0",
+    "npm-run-all2": "8.0.4",
     "postcss": "8.5.6",
     "prettier": "3.6.2",
     "stylelint": "16.23.1",
