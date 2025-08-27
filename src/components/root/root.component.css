@@ -46,13 +46,10 @@ section {
   }
 
   /* With container query units, contain-scale to the main container */
-  inline-size: min(
-    100cqw,
-    calc(100cqh * (var(---kvlm-posting-aspect-ratio)))
-  );
+  inline-size: min(100cqw, calc(100cqh * (var(---kvlm-posting-aspect-ratio))));
   block-size: auto;
 
-  &:not([data-has-file])::after {
+  :host(:not([data-has-file])) &::after {
     position: absolute;
     inset: 50% auto auto 50%;
 
