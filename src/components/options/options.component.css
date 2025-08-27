@@ -107,7 +107,6 @@ label.options {
 }
 
 @media (orientation: portrait) {
-  /* stylelint-disable-next-line rule-empty-line-before */
   nav {
     flex-flow: row wrap;
   }
@@ -119,14 +118,12 @@ label.options {
 }
 
 @media (orientation: portrait) and (width >= 768px) {
-  /* stylelint-disable-next-line rule-empty-line-before */
   nav {
     flex-wrap: nowrap;
   }
 }
 
 @media (orientation: landscape) {
-  /* stylelint-disable-next-line rule-empty-line-before */
   nav {
     flex-flow: column nowrap;
   }

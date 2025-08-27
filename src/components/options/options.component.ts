@@ -1,22 +1,13 @@
 import type { EventWithTarget } from '@enke.dev/lit-utils/lib/types/event.types.js';
 import { html, LitElement, unsafeCSS } from 'lit';
-import {
-  customElement,
-  eventOptions,
-  property,
-  query,
-  state,
-} from 'lit/decorators.js';
+import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { live } from 'lit/directives/live.js';
 import { map } from 'lit/directives/map.js';
 
 import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
 import type { MediaSize } from '../../utils/file.utils.js';
-import type {
-  ApplicableFilters,
-  FilterName,
-} from '../../utils/filter.utils.js';
+import type { ApplicableFilters, FilterName } from '../../utils/filter.utils.js';
 import { FILTERS } from '../../utils/filter.utils.js';
 
 import styles from './options.component.css?inline';
@@ -47,9 +38,7 @@ export class Options extends LitElement {
   readonly selectedFilters!: ApplicableFilters;
 
   @eventOptions({ passive: true })
-  private handleSizeChange({
-    target,
-  }: EventWithTarget<HTMLSelectElement | HTMLInputElement>) {
+  private handleSizeChange({ target }: EventWithTarget<HTMLSelectElement | HTMLInputElement>) {
     // check what issued the event
     this.isCustomSize = target.name !== 'size' || target.value === 'custom';
 
@@ -78,16 +67,14 @@ export class Options extends LitElement {
 
     if (target.name.endsWith('-value')) {
       isEnabled =
-        target.parentElement?.querySelector<HTMLInputElement>(
-          `input[name="${name}-toggle"]`,
-        )?.checked ?? false;
+        target.parentElement?.querySelector<HTMLInputElement>(`input[name="${name}-toggle"]`)
+          ?.checked ?? false;
       currentValue = target.valueAsNumber;
     } else {
       isEnabled = target.checked;
       currentValue =
-        target.parentElement?.querySelector<HTMLInputElement>(
-          `input[name="${name}-value"]`,
-        )?.valueAsNumber ?? 0;
+        target.parentElement?.querySelector<HTMLInputElement>(`input[name="${name}-value"]`)
+          ?.valueAsNumber ?? 0;
     }
 
     // determine the selected filters
@@ -138,12 +125,7 @@ export class Options extends LitElement {
         <label class="dropdown" @change=${this.handleSizeChange}>
           <span>Size</span>
           <select name="size">
-            <option
-              value="custom"
-              ?selected="${this.isCustomSize}"
-            >
-              Custom
-            </option>
+            <option value="custom" ?selected="${this.isCustomSize}">Custom</option>
             ${map(
               Object.entries(MEDIA_SIZES),
               ([size, { height, width }]) => html`
@@ -159,17 +141,33 @@ export class Options extends LitElement {
             )}
           </select>
 
-          <input name="width" type="number" min="0" step="1" placeholder="width" required ?readonly="${!this.isCustomSize}" .valueAsNumber="${live(this.selectedSize[0])}" />
-          <input name="height" type="number" min="0" step="1" placeholder="height" required ?readonly="${!this.isCustomSize}" .valueAsNumber="${live(this.selectedSize[1])}" />
+          <input
+            name="width"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="width"
+            required
+            ?readonly="${!this.isCustomSize}"
+            .valueAsNumber="${live(this.selectedSize[0])}"
+          />
+          <input
+            name="height"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="height"
+            required
+            ?readonly="${!this.isCustomSize}"
+            .valueAsNumber="${live(this.selectedSize[1])}"
+          />
         </label>
 
         <fieldset @change=${this.handleFilterChange}>
           <legend>Filters</legend>
           ${map(Object.keys(FILTERS), name => this.renderFilter(name as FilterName))}
         </fieldset>
-
       </nav>
-  </nav>
     `;
   }
 }

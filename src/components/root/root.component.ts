@@ -69,9 +69,7 @@ export class Root extends LitElement {
   }
 
   @eventOptions({ passive: true })
-  private handleFilterChange({
-    detail,
-  }: HTMLElementEventMap['filters-change']) {
+  private handleFilterChange({ detail }: HTMLElementEventMap['filters-change']) {
     this.selectedFilters = detail;
     this.#updateCanvas();
   }
@@ -117,10 +115,7 @@ export class Root extends LitElement {
             '---kvlm-posting-aspect-ratio': `${this.selectedSize[1]} / ${this.selectedSize[0]}`,
           })}"
         >
-          <canvas
-            height="${this.selectedSize[0]}"
-            width="${this.selectedSize[1]}"
-          ></canvas>
+          <canvas height="${this.selectedSize[0]}" width="${this.selectedSize[1]}"></canvas>
           <input
             type="file"
             accept="image/*,video/*"
@@ -130,12 +125,7 @@ export class Root extends LitElement {
           />
         </section>
 
-        <button
-          ?disabled="${this.file === undefined}"
-          @click=${this.handleSave}
-        >
-          Save
-        </button>
+        <button ?disabled="${this.file === undefined}" @click=${this.handleSave}>Save</button>
       </main>
     `;
   }

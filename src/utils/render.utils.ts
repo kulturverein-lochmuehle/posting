@@ -210,13 +210,7 @@ export async function renderFile(
     case 'video/mp4':
     case 'video/webm':
     case 'video/quicktime': {
-      const buffer = await renderVideo(
-        file,
-        size,
-        filters,
-        abortCtrl,
-        onUpdate,
-      );
+      const buffer = await renderVideo(file, size, filters, abortCtrl, onUpdate);
       const blob = new Blob([buffer ?? '']);
       rendered = URL.createObjectURL(blob);
 
