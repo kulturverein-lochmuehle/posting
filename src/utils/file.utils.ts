@@ -1,3 +1,5 @@
+export type MediaSize = [height: number, width: number];
+
 /**
  * Reads files from a drag event.
  * @param event The drag event to read files from.
@@ -35,4 +37,25 @@ export function readFileContents(file: File): Promise<ArrayBuffer> {
     reader.onerror = () => reject(new Error('Failed to read file'));
     reader.readAsArrayBuffer(file);
   });
+}
+
+/**
+ * Saves the contents of a file.
+ * @param url The data URL of the file to save.
+ * @param filename The name of the file to save.
+ */
+export function saveFileContents(url: string, filename: string): void {
+  // prepare link element
+  const link = document.createElement('a');
+  link.href = url;
+  link.style.display = 'none';
+  link.download = filename;
+
+  // add link to the DOM and click it (start download)
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // free up memory
+  URL.revokeObjectURL(url);
 }

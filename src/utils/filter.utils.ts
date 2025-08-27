@@ -36,7 +36,7 @@ export function parseFilter(name: FilterName, value: number): string {
  *  custom raw filters are supported, but they should not be used together.
  */
 export function applyFilters(
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement | OffscreenCanvas,
   filters: ApplicableFilters,
 ): void {
   const ctx = canvas.getContext('2d');

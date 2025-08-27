@@ -1,16 +1,18 @@
-import { drawScaledImage } from './canvas.utils.js';
 import type { ApplicableFilters } from './filter.utils.js';
+import { renderImage } from './render.utils.js';
 
 /**
  * Previews an image file on a canvas.
  * @param file The image file to preview.
  * @param canvas The canvas element to draw the image on.
+ * @param filters The filters to apply to the image.
+ * @param abortCtrl The abort controller to signal when to stop rendering.
  */
 export function previewImage(
   file: File,
   canvas: HTMLCanvasElement,
-  abortCtrl: AbortController,
   filters: ApplicableFilters,
+  abortCtrl: AbortController,
 ): void {
   // get the canvas context
   const ctx = canvas.getContext('2d');
@@ -20,7 +22,7 @@ export function previewImage(
   const img = new Image();
   img.onload = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawScaledImage(img, canvas, filters);
+    renderImage(img, canvas, filters, abortCtrl);
   };
   // URL.revokeObjectURL(img.src);
   img.src = URL.createObjectURL(file);
@@ -38,12 +40,14 @@ export function previewImage(
  * @see https://stackoverflow.com/a/32708998/1146207
  * @param file The video file to preview.
  * @param canvas The canvas element to draw the video on.
+ * @param filters The filters to apply to the video.
+ * @param abortCtrl The abort controller to signal when to stop rendering.
  */
 export function previewVideo(
   file: File,
   canvas: HTMLCanvasElement,
-  abortCtrl: AbortController,
   filters: ApplicableFilters,
+  abortCtrl: AbortController,
 ): void {
   // get the canvas context
   const ctx = canvas.getContext('2d');
@@ -58,7 +62,7 @@ export function previewVideo(
     if (abortCtrl.signal.aborted) return;
     // read the current frame and draw it
     const bitmap = await createImageBitmap(video);
-    drawScaledImage(bitmap, canvas, filters);
+    renderImage(bitmap, canvas, filters, abortCtrl);
     // request the next frame
     video.requestVideoFrameCallback(updateCanvas);
   };
@@ -101,13 +105,13 @@ export function previewFile(
     case 'image/png':
     case 'image/jpeg':
     case 'image/gif':
-      previewImage(file, canvas, abortCtrl, filters);
+      previewImage(file, canvas, filters, abortCtrl);
       break;
 
     case 'video/mp4':
     case 'video/webm':
     case 'video/quicktime':
-      previewVideo(file, canvas, abortCtrl, filters);
+      previewVideo(file, canvas, filters, abortCtrl);
       break;
 
     default:

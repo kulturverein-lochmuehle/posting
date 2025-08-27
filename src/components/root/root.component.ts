@@ -3,18 +3,18 @@ import '../options/options.component.js';
 import type { EventWithTarget } from '@enke.dev/lit-utils/lib/types/event.types.js';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, eventOptions, query, state } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
+import type { MediaSize } from '../../utils/file.utils.js';
 import { readFilesFromEvent } from '../../utils/file.utils.js';
 import type { ApplicableFilters } from '../../utils/filter.utils.js';
 import { previewFile } from '../../utils/preview.utils.js';
-import type { MediaSize } from '../options/options.component.js';
+import { renderFile } from '../../utils/render.utils.js';
 
 import styles from './root.component.css?inline';
 
-@customElement('kvlm-atmospheric-posting')
+@customElement('kvlm-posting')
 export class Root extends LitElement {
   static override readonly styles = unsafeCSS(styles);
 
@@ -22,9 +22,6 @@ export class Root extends LitElement {
 
   @query('canvas')
   private canvas!: HTMLCanvasElement;
-
-  @state()
-  private dragging = false;
 
   @state()
   private file?: File;
@@ -79,10 +76,28 @@ export class Root extends LitElement {
     this.#updateCanvas();
   }
 
+  @eventOptions({ passive: true })
+  private async handleSave() {
+    this.#renderCanvas();
+  }
+
   #updateCanvas() {
     if (this.file === undefined) return;
+
     this.#abortCtrl?.abort();
     this.#abortCtrl = previewFile(this.file, this.canvas, this.selectedFilters);
+  }
+
+  async #renderCanvas() {
+    if (this.file === undefined) return;
+
+    this.#abortCtrl?.abort();
+    this.#abortCtrl = await renderFile(
+      this.file,
+      this.selectedSize,
+      this.selectedFilters,
+      progress => console.log(`Progress: ${progress * 100}%`),
+    );
   }
 
   override render() {
@@ -96,7 +111,7 @@ export class Root extends LitElement {
         ></kvlm-posting-options>
       </header>
 
-      <main class="${classMap({ dragging: this.dragging })}">
+      <main>
         <section
           style="${styleMap({
             '---kvlm-posting-aspect-ratio': `${this.selectedSize[1]} / ${this.selectedSize[0]}`,
@@ -114,6 +129,13 @@ export class Root extends LitElement {
             @change=${this.handleFileChange}
           />
         </section>
+
+        <button
+          ?disabled="${this.file === undefined}"
+          @click=${this.handleSave}
+        >
+          Save
+        </button>
       </main>
     `;
   }

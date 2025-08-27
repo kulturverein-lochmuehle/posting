@@ -12,6 +12,7 @@ import { live } from 'lit/directives/live.js';
 import { map } from 'lit/directives/map.js';
 
 import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
+import type { MediaSize } from '../../utils/file.utils.js';
 import type {
   ApplicableFilters,
   FilterName,
@@ -19,8 +20,6 @@ import type {
 import { FILTERS } from '../../utils/filter.utils.js';
 
 import styles from './options.component.css?inline';
-
-export type MediaSize = [height: number, width: number];
 
 /**
  * Options for the atmospheric posting.
