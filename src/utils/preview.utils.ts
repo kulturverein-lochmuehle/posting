@@ -86,6 +86,9 @@ export function previewVideo(
   // revoke latest object URL on abort
   abortCtrl.signal.addEventListener('abort', () => {
     URL.revokeObjectURL(video.src);
+    video.pause();
+    video.remove();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 }
 

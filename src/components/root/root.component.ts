@@ -18,7 +18,9 @@ import styles from './root.component.css?inline';
 export class Root extends LitElement {
   static override readonly styles = unsafeCSS(styles);
 
-  #abortCtrl?: AbortController;
+  #abortPreview?: AbortController;
+  #abortRendering?: AbortController;
+  #abortOrResume = this.handleVisibilityChange.bind(this);
 
   @query('canvas')
   private canvas!: HTMLCanvasElement;
@@ -37,6 +39,18 @@ export class Root extends LitElement {
 
   @state()
   private selectedFilters: ApplicableFilters = {};
+
+  @eventOptions({ passive: true })
+  private handleVisibilityChange() {
+    if (document.hidden) {
+      // page is hidden, so stop preview or running rendering
+      this.#abortPreview?.abort();
+      this.#abortRendering?.abort();
+    } else {
+      // page became visible (again?), resume preview
+      this.#updateCanvas();
+    }
+  }
 
   @eventOptions({ capture: true })
   private handleDragOver(event: DragEvent) {
@@ -85,15 +99,17 @@ export class Root extends LitElement {
   #updateCanvas() {
     if (this.file === undefined) return;
 
-    this.#abortCtrl?.abort();
-    this.#abortCtrl = previewFile(this.file, this.canvas, this.selectedFilters);
+    // re-initiate preview
+    this.#abortPreview?.abort();
+    this.#abortPreview = previewFile(this.file, this.canvas, this.selectedFilters);
   }
 
   async #renderCanvas() {
     if (this.file === undefined) return;
 
-    this.#abortCtrl?.abort();
-    this.#abortCtrl = await renderFile(
+    // start rendering and notify about progress
+    this.#abortRendering?.abort();
+    this.#abortRendering = await renderFile(
       this.file,
       this.selectedSize,
       this.selectedFilters,
@@ -106,6 +122,16 @@ export class Root extends LitElement {
         }
       },
     );
+  }
+
+  override connectedCallback() {
+    super.connectedCallback();
+    document.addEventListener('visibilitychange', this.#abortOrResume);
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('visibilitychange', this.#abortOrResume);
   }
 
   override render() {
