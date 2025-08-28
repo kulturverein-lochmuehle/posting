@@ -82,7 +82,6 @@ label.options {
 
   display: flex;
   flex-flow: row nowrap;
-  gap: 0.5em;
   align-items: center;
   height: fit-content;
 
@@ -95,6 +94,33 @@ label.options {
     inset: 0 auto 0 0;
 
     opacity: 0;
+
+    ~ input {
+      overflow-x: clip;
+
+      transition: 0.2s ease;
+      transition-property:
+        border-left-width, border-right-width, margin-left, padding-left, padding-right, width;
+
+      &[hidden] {
+        width: 0;
+        margin-left: 0;
+        padding-right: 0;
+        padding-left: 0;
+
+        border-right-width: 0;
+        border-left-width: 0;
+      }
+
+      &:not([hidden]) {
+        width: calc-size(max-content, size);
+        margin-left: 0.5em;
+      }
+    }
+  }
+
+  span {
+    margin-left: 0.5em;
   }
 
   &::before {
@@ -116,9 +142,11 @@ label.options {
   }
 }
 
+/* disabled state */
 :host([aria-disabled='true']) fieldset legend,
 :host([aria-disabled='true']) label.dropdown > span,
 label.dropdown select:disabled,
+/* stylelint-disable-next-line no-descending-specificity */
 input:not([type='checkbox']):disabled,
 label:has(input[type='checkbox']:disabled),
 button:disabled {

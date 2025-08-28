@@ -125,7 +125,7 @@ export class Options extends LitElement {
           ?disabled="${this.disabled}"
         />
         <input
-          ?disabled="${this.disabled}"
+          ?disabled="${!isEnabled || this.disabled}"
           ?hidden="${!isEnabled}"
           data-name="${name}"
           name="${name}-value"
