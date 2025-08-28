@@ -27,6 +27,9 @@ export class Root extends LitElement {
   private file?: File;
 
   @state()
+  private saving?: number;
+
+  @state()
   private selectedSize: MediaSize = [
     MEDIA_SIZES['Instagram Feed'].height,
     MEDIA_SIZES['Instagram Feed'].width,
@@ -94,7 +97,14 @@ export class Root extends LitElement {
       this.file,
       this.selectedSize,
       this.selectedFilters,
-      progress => console.log(`Progress: ${progress * 100}%`),
+      progress => {
+        this.saving = Math.floor(progress * 100);
+        if (progress >= 1) {
+          setTimeout(() => {
+            this.saving = undefined;
+          }, 1000);
+        }
+      },
     );
   }
 
@@ -102,8 +112,11 @@ export class Root extends LitElement {
     return html`
       <header>
         <kvlm-posting-options
+          .disabled="${this.file === undefined || this.saving !== undefined}"
+          .saving=${this.saving}
           .selectedSize=${this.selectedSize}
           .selectedFilters=${this.selectedFilters}
+          @save=${this.handleSave}
           @size-change=${this.handleSizeChange}
           @filters-change=${this.handleFilterChange}
         ></kvlm-posting-options>
@@ -124,8 +137,6 @@ export class Root extends LitElement {
             @change=${this.handleFileChange}
           />
         </section>
-
-        <button ?disabled="${this.file === undefined}" @click=${this.handleSave}>Save</button>
       </main>
     `;
   }

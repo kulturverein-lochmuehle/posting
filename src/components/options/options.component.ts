@@ -1,9 +1,11 @@
+import { StringifiedBooleanConverter } from '@enke.dev/lit-utils/lib/converters/stringified-boolean.converter.js';
 import type { EventWithTarget } from '@enke.dev/lit-utils/lib/types/event.types.js';
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { live } from 'lit/directives/live.js';
 import { map } from 'lit/directives/map.js';
+import { when } from 'lit/directives/when.js';
 
 import MEDIA_SIZES from '../../assets/media-sizes.json' assert { type: 'json' };
 import type { MediaSize } from '../../utils/file.utils.js';
@@ -30,6 +32,17 @@ export class Options extends LitElement {
 
   @state()
   private isCustomSize = false;
+
+  @property({
+    type: Boolean,
+    reflect: true,
+    attribute: 'aria-disabled',
+    converter: StringifiedBooleanConverter(),
+  })
+  readonly disabled = false;
+
+  @property({ type: Number })
+  readonly saving?: number;
 
   @property({ type: Object })
   readonly selectedSize!: MediaSize;
@@ -91,6 +104,12 @@ export class Options extends LitElement {
     this.dispatchEvent(event);
   }
 
+  @eventOptions({ passive: true })
+  private handleSaveClick() {
+    const event = new CustomEvent('save');
+    this.dispatchEvent(event);
+  }
+
   renderFilter(name: FilterName) {
     const isEnabled = name in this.selectedFilters;
     const schema = FILTERS[name];
@@ -103,8 +122,10 @@ export class Options extends LitElement {
           name="${name}-toggle"
           value="${name}"
           ?checked="${isEnabled}"
+          ?disabled="${this.disabled}"
         />
         <input
+          ?disabled="${this.disabled}"
           ?hidden="${!isEnabled}"
           data-name="${name}"
           name="${name}-value"
@@ -124,7 +145,7 @@ export class Options extends LitElement {
       <nav>
         <label class="dropdown" @change=${this.handleSizeChange}>
           <span>Size</span>
-          <select name="size">
+          <select name="size" ?disabled="${this.disabled}">
             <option value="custom" ?selected="${this.isCustomSize}">Custom</option>
             ${map(
               Object.entries(MEDIA_SIZES),
@@ -148,6 +169,7 @@ export class Options extends LitElement {
             step="1"
             placeholder="width"
             required
+            ?disabled="${this.disabled}"
             ?readonly="${!this.isCustomSize}"
             .valueAsNumber="${live(this.selectedSize[0])}"
           />
@@ -158,6 +180,7 @@ export class Options extends LitElement {
             step="1"
             placeholder="height"
             required
+            ?disabled="${this.disabled}"
             ?readonly="${!this.isCustomSize}"
             .valueAsNumber="${live(this.selectedSize[1])}"
           />
@@ -167,6 +190,16 @@ export class Options extends LitElement {
           <legend>Filters</legend>
           ${map(Object.keys(FILTERS), name => this.renderFilter(name as FilterName))}
         </fieldset>
+
+        <fieldset>
+          <button ?disabled="${this.disabled}" @click=${this.handleSaveClick}>
+            ${when(
+              this.saving !== undefined,
+              () => html`Saving ${this.saving}%`,
+              () => 'Save',
+            )}
+          </button>
+        </fieldset>
       </nav>
     `;
   }
@@ -174,6 +207,7 @@ export class Options extends LitElement {
 
 declare global {
   interface HTMLElementEventMap {
+    save: CustomEvent<void>;
     'size-change': CustomEvent<MediaSize>;
     'filters-change': CustomEvent<ApplicableFilters>;
   }

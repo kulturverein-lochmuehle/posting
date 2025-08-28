@@ -9,6 +9,25 @@ nav {
   padding: 1em;
 }
 
+button,
+select,
+input:not([type='checkbox']) {
+  all: unset;
+
+  box-sizing: border-box;
+  height: 1.5em;
+  padding: 0.125em 0.25em;
+
+  border: 1px solid currentcolor;
+  cursor: pointer;
+
+  transition: opacity 0.2s ease-in-out;
+}
+
+button {
+  white-space: nowrap;
+}
+
 fieldset {
   all: unset;
 
@@ -24,6 +43,8 @@ label.dropdown > span {
   font-size: 0.9em;
   white-space: nowrap;
   text-transform: uppercase;
+
+  transition: opacity 0.2s ease-in-out;
 }
 
 label.dropdown {
@@ -34,17 +55,6 @@ label.dropdown {
   height: fit-content;
 
   cursor: pointer;
-
-  select,
-  input {
-    all: unset;
-
-    box-sizing: border-box;
-    height: 1.5em;
-    padding: 0.125em 0.25em;
-
-    border: 1px solid currentcolor;
-  }
 
   select {
     padding-right: 1.5em;
@@ -104,6 +114,16 @@ label.options {
   &:has(input:checked)::before {
     content: '╳';
   }
+}
+
+:host([aria-disabled='true']) fieldset legend,
+:host([aria-disabled='true']) label.dropdown > span,
+label.dropdown select:disabled,
+input:not([type='checkbox']):disabled,
+label:has(input[type='checkbox']:disabled),
+button:disabled {
+  cursor: default;
+  opacity: 0.5;
 }
 
 @media (orientation: portrait) {
